@@ -1,36 +1,37 @@
 import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { choosePrice } from '../../../../../store/aviasalesSlice';
+import { toggleActive } from '../../../../../store/actions';
+
 import styles from './topbarprice.module.scss';
 
 const TopBarPrice = () => {
   const dispatch = useDispatch();
-  const activeButton = useSelector((state) => state.aviasales.activeButton);
+  const active = useSelector((state) => state.tabs.active);
 
-  const handleChoosePrice = (buttonName) => {
-    dispatch(choosePrice(buttonName));
+  const handleToggle = (tab) => {
+    dispatch(toggleActive(tab));
   };
 
   return (
     <>
       <button
         type="button"
-        className={`${styles.button} ${activeButton === 'cheapest' ? styles.active : ''}`}
-        onClick={() => handleChoosePrice('cheapest')}
+        className={`${styles.button} ${active === 'cheapest' ? styles.active : ''}`}
+        onClick={() => handleToggle('cheapest')}
       >
         Самый дешевый
       </button>
       <button
         type="button"
-        className={`${styles.button} ${activeButton === 'fastest' ? styles.active : ''}`}
-        onClick={() => handleChoosePrice('fastest')}
+        className={`${styles.button} ${active === 'fastest' ? styles.active : ''}`}
+        onClick={() => handleToggle('fastest')}
       >
         Самый быстрый
       </button>
       <button
         type="button"
-        className={`${styles.button} ${activeButton === 'optimal' ? styles.active : ''}`}
-        onClick={() => handleChoosePrice('optimal')}
+        className={`${styles.button} ${active === 'optimal' ? styles.active : ''}`}
+        onClick={() => handleToggle('optimal')}
       >
         Оптимальный
       </button>
