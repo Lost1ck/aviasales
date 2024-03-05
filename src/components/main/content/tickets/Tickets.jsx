@@ -5,7 +5,7 @@ import styles from './tickets.module.scss';
 
 function Tickets() {
   return (
-    <div>
+    <div className={styles.container}>
       <div className={styles.title}>
         <div className={styles.price}>123</div>
         <div className={styles.company}>123</div>
