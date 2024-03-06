@@ -14,7 +14,7 @@ const App = () => {
     <div>
       {isOnline
         ? (
-          <div style={{ backgroundColor: '#F3F7FA' }} className={style.container}>
+          <div className={style.container}>
             <div className={styles.container}>
               <Header />
               <Main />

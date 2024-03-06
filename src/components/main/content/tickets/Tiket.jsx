@@ -29,7 +29,7 @@ const Ticket = ({ ticket }) => (
     marginBottom: '20px',
     padding: '10px',
     boxShadow: '0px 0px 2px 2px rgba(0, 0, 0, 0.05)',
-    height: '184px',
+    height: '160px',
     backgroundColor: '#fff',
     borderRadius: '5px',
   }}
@@ -40,16 +40,16 @@ const Ticket = ({ ticket }) => (
     }}
     >
       <p style={{ color: '#2196F3', textTransform: 'uppercase', fontSize: '24px' }}>
-        {`${ticket?.price} P`}
+        {`${ticket.price.toLocaleString('ru-RU')} P`}
       </p>
       <p>
         {ticket?.carrier}
       </p>
     </div>
-    <div className={styles.gridContainer} style={{ width: '400px' }}>
+    <div className={styles.container} style={{ width: '400px' }}>
       {ticket?.segments.map((segment, index) => (
         <React.Fragment key={segment.id || index}>
-          <div className={styles.gridItem}>
+          <div>
             <p>
               {segment.origin}
               {' '}
@@ -57,28 +57,36 @@ const Ticket = ({ ticket }) => (
               {' '}
               {segment.destination}
             </p>
+          </div>
+          <div>
             <p>
               В ПУТИ
             </p>
+          </div>
+          <div>
             <p>
               {segment.stops.length}
               {' '}
               ПЕРЕСАДКИ
             </p>
           </div>
-          <div className={styles.gridItem}>
-            <p>
+          <div>
+            <p className={styles.textBlack}>
               {addMinutesToISOTimeString(segment.date, segment.duration)}
               {' '}
               -
               {' '}
               {formatISOTime(segment.date)}
             </p>
-            <p>
+          </div>
+          <div>
+            <p className={styles.textBlack}>
               {formatDuration(segment.duration)}
               {' '}
             </p>
-            <p>
+          </div>
+          <div>
+            <p className={styles.textBlack}>
               {segment.stops.join(', ') || 'Без пересадок'}
             </p>
           </div>
