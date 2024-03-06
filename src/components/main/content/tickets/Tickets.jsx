@@ -1,29 +1,51 @@
-import React from 'react';
+/* eslint-disable no-unused-vars */
+import React, { useEffect, useState } from 'react';
+import { useGetSearchIdQuery, useGetTicketsQuery } from '../../../../api/tikets.api';
 import styles from './tickets.module.scss';
+import Ticket from './Tiket';
 
-// import data from '../../data';
+const TicketsComponent = () => {
+  const { data: searchIdData, isFetching: isFetchingSearchId } = useGetSearchIdQuery();
+  const [tickets, setTickets] = useState([]);
+  const [displayedTickets, setDisplayedTickets] = useState([]);
+  const [stop, setStop] = useState(false);
+  const ticketsPerPage = 5;
 
-function Tickets() {
+  const { data: ticketsData, refetch } = useGetTicketsQuery(searchIdData?.searchId, {
+    skip: !searchIdData?.searchId || stop,
+  });
+
+  useEffect(() => {
+    if (!isFetchingSearchId && searchIdData?.searchId && !stop) {
+      const fetchTickets = async () => {
+        const response = await refetch();
+        if (response.data) {
+          setTickets((prev) => [...prev, ...response.data.tickets]);
+          setDisplayedTickets((prev) => [...prev, ...response.data.tickets]
+            .slice(0, ticketsPerPage));
+          setStop(response.data.stop);
+        }
+      };
+
+      fetchTickets();
+    }
+  }, [searchIdData, isFetchingSearchId, stop, refetch]);
+
+  const handleLoadMore = () => {
+    const nextTicketsToShow = tickets
+      .slice(displayedTickets.length, displayedTickets.length + ticketsPerPage);
+    setDisplayedTickets((prev) => [...prev, ...nextTicketsToShow]);
+  };
+
   return (
-    <div className={styles.container}>
-      <div className={styles.title}>
-        <div className={styles.price}>123</div>
-        <div className={styles.company}>123</div>
-      </div>
-      <div className={styles.main}>
-        <div className={styles.there}>
-          <div className={styles.way}>123</div>
-          <div className={styles.time}>123</div>
-          <div className={styles.transfers}>123</div>
-        </div>
-        <div className={styles.back}>
-          <div className={styles.way}>123</div>
-          <div className={styles.time}>123</div>
-          <div className={styles.transfers}>123</div>
-        </div>
-      </div>
+    <div>
+      {displayedTickets.length === 0 && <p>Билеты загружаются...</p>}
+      {displayedTickets.map((ticket, index) => <Ticket key={ticket.id || index} ticket={ticket} />)}
+      {displayedTickets.length < tickets.length && (
+        <button className={styles.button} type="button" onClick={handleLoadMore}><span className={styles.text}>Показать еще 5 билетов</span></button>
+      )}
     </div>
   );
-}
+};
 
-export default Tickets;
+export default TicketsComponent;
