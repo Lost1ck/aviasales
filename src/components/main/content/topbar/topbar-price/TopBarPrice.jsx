@@ -6,8 +6,7 @@ import styles from './topbarprice.module.scss';
 
 const TopBarPrice = () => {
   const dispatch = useDispatch();
-  const active = useSelector((state) => state.tabs.active);
-
+  const active = useSelector((state) => state.tabs.active); // tab status 'cheapest'
   const handleToggle = (tab) => {
     dispatch(toggleActive(tab));
   };

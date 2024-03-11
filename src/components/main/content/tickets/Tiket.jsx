@@ -65,9 +65,7 @@ const Ticket = ({ ticket }) => (
           </div>
           <div>
             <p>
-              {segment.stops.length}
-              {' '}
-              ПЕРЕСАДКИ
+              {segment.stops.length === 0 ? 'НЕТ ПЕРЕСАДОК' : `${segment.stops.length} ПЕРЕСАДКИ`}
             </p>
           </div>
           <div>
@@ -87,7 +85,7 @@ const Ticket = ({ ticket }) => (
           </div>
           <div>
             <p className={styles.textBlack}>
-              {segment.stops.join(', ') || 'Без пересадок'}
+              {segment.stops.join(', ') || '-'}
             </p>
           </div>
         </React.Fragment>

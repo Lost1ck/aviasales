@@ -1,43 +1,54 @@
 /* eslint-disable no-param-reassign */
-/* eslint-disable guard-for-in */
-/* eslint-disable no-restricted-syntax */
 import { createReducer } from '@reduxjs/toolkit';
 import { toggleCheckbox, toggleAllCheckboxes, setAllCheckboxes } from './actions';
 
 const initialState = {
   allChecked: false,
   checkboxes: {
-    withoutTransfer: false,
+    withoutTransfer: true,
     oneTransfer: false,
     twoTransfers: false,
     threeTransfers: false,
   },
 };
 
-const aviasalesReducer = createReducer(initialState, (build) => {
-  build
+const aviasalesReducer = createReducer(initialState, (builder) => {
+  builder
     .addCase(toggleCheckbox, (state, action) => {
       const { checkboxName } = action.payload;
       state.checkboxes[checkboxName] = !state.checkboxes[checkboxName];
-      if (Object.keys(state.checkboxes).every((key) => key !== 'allChecked')
-      && Object.values(state.checkboxes).every((value) => value)) {
-        state.allChecked = true;
-      } else {
-        state.allChecked = false;
+
+      // Обновляем allChecked на основе текущего состояния всех чекбоксов
+      state.allChecked = Object.values(state.checkboxes).every((value) => value);
+
+      // Если все чекбоксы выключены, оставляем "без пересадок" включенным
+      const allCheckboxesOff = !Object.values(state.checkboxes).some((value) => value);
+      if (allCheckboxesOff) {
+        state.checkboxes.withoutTransfer = true;
       }
     })
     .addCase(toggleAllCheckboxes, (state) => {
-      const allChecked = Object.values(state.checkboxes).every((value) => value);
-      state.allChecked = !allChecked;
-      for (const key in state.checkboxes) {
-        state.checkboxes[key] = state.allChecked;
+      if (state.allChecked) {
+        // Сбрасываем все чекбоксы
+        Object.keys(state.checkboxes).forEach((key) => {
+          state.checkboxes[key] = false;
+        });
+        // Всегда оставляем "без пересадок" включенным
+        state.checkboxes.withoutTransfer = true;
+        state.allChecked = false; // Обновляем, так как не все чекбоксы активны
+      } else {
+        // Включаем все чекбоксы
+        Object.keys(state.checkboxes).forEach((key) => {
+          state.checkboxes[key] = true;
+        });
+        state.allChecked = true;
       }
     })
     .addCase(setAllCheckboxes, (state) => {
-      state.allChecked = true;
-      for (const key in state.checkboxes) {
+      Object.keys(state.checkboxes).forEach((key) => {
         state.checkboxes[key] = true;
-      }
+      });
+      state.allChecked = true;
     });
 });
 

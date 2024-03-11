@@ -5,6 +5,7 @@ import { setOnlineStatus, setOfflineStatus } from './actions';
 const initialState = {
   isOnline: navigator.onLine,
 };
+// при отсутсвие соединения, способно показать компоненты
 
 const networkReducer = createReducer(initialState, (builder) => {
   builder
