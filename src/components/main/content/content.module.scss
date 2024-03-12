@@ -1,7 +1,12 @@
 .container {
   flex-direction: column;
   display: flex;
-  max-width: 502px;
   width: 502px;
-  margin-left: 40px;
+  margin-left: 20px;
+}
+
+@media screen and (max-width: 750px) {
+  .container {
+    margin-left: clamp(0px, 3vw, 20px);
+  }
 }

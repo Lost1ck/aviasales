@@ -24,73 +24,66 @@ function addMinutesToISOTimeString(isoString, minutesToAdd) {
 }
 
 const Ticket = ({ ticket }) => (
-  <div style={{
-    marginTop: '20px',
-    marginBottom: '20px',
-    padding: '10px',
-    boxShadow: '0px 0px 2px 2px rgba(0, 0, 0, 0.05)',
-    height: '160px',
-    backgroundColor: '#fff',
-    borderRadius: '5px',
-  }}
-  >
-    {/* {console.log(ticket)} */}
-    <div style={{
-      display: 'flex', alignItems: 'center', justifyContent: 'space-between', height: '40px',
-    }}
-    >
+  <div className={styles.ticket}>
+    <div className={styles.top}>
       <p style={{ color: '#2196F3', textTransform: 'uppercase', fontSize: '24px' }}>
         {`${ticket.price.toLocaleString('ru-RU')} P`}
       </p>
       <p>
-        {ticket?.carrier}
+        <img src={`https://pics.avs.io/99/36/${ticket.carrier}.png`} alt="avia ticket-logo" />
       </p>
     </div>
-    <div className={styles.container} style={{ width: '400px' }}>
-      {ticket?.segments.map((segment, index) => (
-        <React.Fragment key={segment.id || index}>
-          <div>
-            <p>
-              {segment.origin}
-              {' '}
-              -
-              {' '}
-              {segment.destination}
-            </p>
+    {ticket?.segments.map((segment, index) => (
+      <React.Fragment key={segment.id || index}>
+        <div className={styles.flex}>
+          <div className={styles.flex} style={{ flexDirection: 'column', flex: '1', marginBottom: '20px' }}>
+            <div>
+              <p>
+                {segment.origin}
+                {' '}
+                -
+                {' '}
+                {segment.destination}
+              </p>
+            </div>
+            <div>
+              <p className={styles.textBlack}>
+                {addMinutesToISOTimeString(segment.date, segment.duration)}
+                {' '}
+                -
+                {' '}
+                {formatISOTime(segment.date)}
+              </p>
+            </div>
           </div>
-          <div>
-            <p>
-              В ПУТИ
-            </p>
+          <div className={styles.flex} style={{ flexDirection: 'column', flex: '1' }}>
+            <div>
+              <p>
+                В ПУТИ
+              </p>
+            </div>
+            <div>
+              <p className={styles.textBlack}>
+                {formatDuration(segment.duration)}
+                {' '}
+              </p>
+            </div>
           </div>
-          <div>
-            <p>
-              {segment.stops.length === 0 ? 'НЕТ ПЕРЕСАДОК' : `${segment.stops.length} ПЕРЕСАДКИ`}
-            </p>
+          <div className={styles.flex} style={{ flexDirection: 'column', flex: '1' }}>
+            <div>
+              <p>
+                {segment.stops.length === 0 ? 'БЕЗ ПЕРЕСАДОК' : `${segment.stops.length} ПЕРЕСАДКИ`}
+              </p>
+            </div>
+            <div>
+              <p className={styles.textBlack}>
+                {segment.stops.join(', ') || '-'}
+              </p>
+            </div>
           </div>
-          <div>
-            <p className={styles.textBlack}>
-              {addMinutesToISOTimeString(segment.date, segment.duration)}
-              {' '}
-              -
-              {' '}
-              {formatISOTime(segment.date)}
-            </p>
-          </div>
-          <div>
-            <p className={styles.textBlack}>
-              {formatDuration(segment.duration)}
-              {' '}
-            </p>
-          </div>
-          <div>
-            <p className={styles.textBlack}>
-              {segment.stops.join(', ') || '-'}
-            </p>
-          </div>
-        </React.Fragment>
-      ))}
-    </div>
+        </div>
+      </React.Fragment>
+    ))}
   </div>
 );
 

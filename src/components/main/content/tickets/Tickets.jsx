@@ -3,18 +3,33 @@
 /* eslint-disable no-unused-vars */
 import React, { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
+import 'nprogress/nprogress.css';
+import NProgress from 'nprogress';
 import { useGetSearchIdQuery, useGetTicketsQuery } from '../../../../api/tikets.api';
-import styles from './tickets.module.scss';
 import Ticket from './Tiket';
+import styles from './tickets.module.scss';
+import NoTickets from './notickets/NoTickets';
 
 const TicketsComponent = () => {
-  const active = useSelector((state) => state.tabs.active); // Получаем активный таб
+  const active = useSelector((state) => state.tabs.active);
   const { data: searchIdData, isFetching: isFetchingSearchId } = useGetSearchIdQuery();
   const [tickets, setTickets] = useState([]);
   const [displayedTickets, setDisplayedTickets] = useState([]);
   const [stop, setStop] = useState(false);
   const ticketsPerPage = 5;
   const { checkboxes } = useSelector((state) => state.aviasales);
+  NProgress.configure({ showSpinner: false });
+
+  useEffect(() => {
+    if (isFetchingSearchId) {
+      NProgress.start();
+    } else {
+      NProgress.done();
+    }
+    return () => {
+      NProgress.remove();
+    };
+  }, [isFetchingSearchId]);
 
   const { data: ticketsData, refetch } = useGetTicketsQuery(searchIdData?.searchId, {
     skip: !searchIdData?.searchId || stop,
@@ -43,7 +58,6 @@ const TicketsComponent = () => {
           setStop(response.data.stop);
         }
       };
-
       fetchTickets();
     }
   }, [searchIdData, isFetchingSearchId, stop, refetch, active, checkboxes]);
@@ -93,7 +107,7 @@ const TicketsComponent = () => {
 
   return (
     <div>
-      {displayedTickets.length === 0 && <p>Билеты загружаются...</p>}
+      {displayedTickets.length === 0 && <NoTickets />}
       {displayedTickets.map((ticket, index) => <Ticket key={ticket.id || index} ticket={ticket} />)}
       {displayedTickets.length < tickets.length && (
         <button className={styles.button} type="button" onClick={handleLoadMore}><span className={styles.text}>Показать еще 5 билетов</span></button>
